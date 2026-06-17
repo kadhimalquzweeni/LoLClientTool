@@ -1,0 +1,76 @@
+﻿@model LoLClientTool.Models.ProfileBackgroundViewModel
+
+@{
+    ViewData["Title"] = "Profile Background Changer";
+}
+
+<h1>Champion Backgrounds</h1>
+
+<div class="background-grid">
+    @foreach (var background in Model.AvailableBackgrounds)
+    {
+        <a class="background-card-link"
+           asp-controller="ProfileBackground"
+           asp-action="Skins"
+           asp-route-championId="@background.ChampionId">
+
+            <div class="background-card">
+                <img src="@background.ImageUrl"
+                     alt="@background.ChampionName background"
+                     loading="lazy" />
+
+                <h3>@background.ChampionName</h3>
+
+                <p>View skins</p>
+            </div>
+        </a>
+    }
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<style>
+    .background-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 16px;
+        margin-top: 20px;
+    }
+
+    .background-card-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .background-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 12px;
+        text-align: center;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+        .background-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+        }
+
+        .background-card img {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .background-card h3 {
+            margin: 8px 0;
+            font-size: 1.1rem;
+        }
+
+        .background-card p {
+            margin: 6px 0;
+        }
+</style>

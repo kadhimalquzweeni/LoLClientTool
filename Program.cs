@@ -8,6 +8,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<ILeagueClientDetector, LeagueClientDetector>();
 builder.Services.AddScoped<ILeagueClientService, LeagueClientService>();
+builder.Services.AddHttpClient<IProfileBackgroundAssetService, ProfileBackgroundAssetService>();
 
 var app = builder.Build();
 

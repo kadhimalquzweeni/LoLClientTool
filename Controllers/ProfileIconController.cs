@@ -67,7 +67,7 @@ namespace LoLProfileChanger.Mvc.Controllers
         {
             const string dataDragonVersion = "15.24.1";
 
-            return Enumerable.Range(30, 471)
+            return Enumerable.Range(50, 29)
                 .Select(iconId => new ProfileIconOptionViewModel
                 {
                     IconId = iconId,

@@ -1,0 +1,76 @@
+﻿@model LoLClientTool.Models.ProfileBackgroundSkinListViewModel
+
+@{
+    ViewData["Title"] = $"{Model.ChampionName} Skins";
+}
+
+<h1>@Model.ChampionName Skins</h1>
+
+<p>
+    Choose a skin below to set it as your League profile background.
+</p>
+
+<a asp-action="Index">Back to champions</a>
+
+<hr />
+
+<p><strong>Status:</strong> @Model.StatusMessage</p>
+
+<hr />
+
+<div class="background-grid">
+    @foreach (var skin in Model.AvailableSkins)
+    {
+        <div class="background-card">
+            <img src="@skin.ImageUrl"
+                 alt="@skin.ChampionName @skin.SkinName"
+                 loading="lazy" />
+
+            <h3>@skin.SkinName</h3>
+
+            <p>Skin ID: @skin.SkinId</p>
+
+            <form asp-action="SetSkin" method="post">
+                <input type="hidden" name="skinId" value="@skin.SkinId" />
+                <input type="hidden" name="championId" value="@Model.ChampionId" />
+
+                <button type="submit" disabled="@(!Model.IsLeagueClientRunning)">
+                    Set Background
+                </button>
+            </form>
+        </div>
+    }
+</div>
+
+<style>
+    .background-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 16px;
+        margin-top: 20px;
+    }
+
+    .background-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 12px;
+        text-align: center;
+    }
+
+        .background-card img {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .background-card h3 {
+            margin: 8px 0;
+            font-size: 1.1rem;
+        }
+
+        .background-card p {
+            margin: 6px 0;
+        }
+</style>
