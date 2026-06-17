@@ -5,3 +5,4 @@ Will add more features soon :)
 
 Prerequisites:
 https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-aspnetcore-10.0.9-windows-x64-installer
+https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-10.0.9-windows-x64-installer
