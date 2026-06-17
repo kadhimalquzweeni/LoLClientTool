@@ -2,3 +2,8 @@
 
 A local ASP.NET Core MVC web app for changing League of Legends profile icons and profile backgrounds through the League Client API. Built to practise MVC architecture, dependency injection, Razor views, HTTP services, Data Dragon asset usage, and polished frontend styling.
 Will add more features soon :)
+## Prerequisites
+
+Before running the app, install both runtimes:
+* [ASP.NET Core Runtime 10.0.9 - Windows x64](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-aspnetcore-10.0.9-windows-x64-installer)
+* [.NET Runtime 10.0.9 - Windows x64](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-10.0.9-windows-x64-installer)
