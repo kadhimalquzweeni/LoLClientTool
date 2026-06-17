@@ -4,26 +4,17 @@
     ViewData["Title"] = "Profile Background Changer";
 }
 
-<div class="page-shell">
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Profile Backgrounds</h1>
-            <p>
-                Pick a champion to view their skins and set one as your profile background.
-            </p>
-        </div>
-    </section>
-
-    <div class="status-panel">
+<div class="status-panel status-panel-row">
+    <div>
         <strong>Status:</strong> @Model.StatusMessage
     </div>
 
-    <h2 class="section-title">Champions</h2>
-
-    <!-- keep your champion background grid here -->
+    <a asp-action="Index" class="btn btn-secondary">
+        Refresh Status
+    </a>
 </div>
 
-<h1>Champion Backgrounds</h1>
+<h1 class="fw-bold">Champion Backgrounds</h1>
 
 <div class="background-grid">
     @foreach (var background in Model.AvailableBackgrounds)

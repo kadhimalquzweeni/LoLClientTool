@@ -16,8 +16,14 @@
         </div>
     </section>
 
-    <div class="status-panel">
-        <strong>Status:</strong> @Model.StatusMessage
+    <div class="status-panel status-panel-row">
+        <div>
+            <strong>Status:</strong> @Model.StatusMessage
+        </div>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            Refresh Status
+        </a>
     </div>
 
     <div class="form-panel">
@@ -43,10 +49,6 @@
                     disabled="@(!Model.IsLeagueClientRunning)">
                 Set Profile Icon
             </button>
-
-            <a asp-action="Index" class="btn btn-secondary">
-                Refresh Status
-            </a>
         </form>
     </div>
 

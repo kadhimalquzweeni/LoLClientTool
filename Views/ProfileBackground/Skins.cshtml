@@ -3,40 +3,12 @@
 @{
     ViewData["Title"] = $"{Model.ChampionName} Skins";
 }
-<div class="page-shell">
-    <section class="hero">
-        <div class="hero-content">
-            <h1>@Model.ChampionName Skins</h1>
-            <p>
-                Choose a skin below to set it as your League profile background.
-            </p>
-
-            <a asp-action="Index" class="btn btn-secondary">
-                Back to Champions
-            </a>
-        </div>
-    </section>
-
-    <div class="status-panel">
-        <strong>Status:</strong> @Model.StatusMessage
-    </div>
-
-    <!-- keep your skins grid here -->
+<div >
+    <a asp-action="Index" class="btn btn-secondary">
+        Back to Champions
+    </a>
 </div>
 
-<h1>@Model.ChampionName Skins</h1>
-
-<p>
-    Choose a skin below to set it as your League profile background.
-</p>
-
-<a asp-action="Index">Back to champions</a>
-
-<hr />
-
-<p><strong>Status:</strong> @Model.StatusMessage</p>
-
-<hr />
 
 <div class="background-grid">
     @foreach (var skin in Model.AvailableSkins)
