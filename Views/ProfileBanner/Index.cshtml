@@ -1,0 +1,45 @@
+﻿@model LoLClientTool.Models.ProfileBannerViewModel
+
+@{
+    ViewData["Title"] = "Profile Banner";
+}
+
+<div class="page-shell">
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="fw-bold">Profile Banner</h1>
+
+            <p>
+                Change the banner accent shown on your League profile.
+            </p>
+        </div>
+    </section>
+
+    <div class="status-panel status-panel-row">
+        <div>
+            <strong>Status:</strong> @Model.ResultMessage
+        </div>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            Refresh Status
+        </a>
+    </div>
+
+    <div class="form-panel">
+        <h2 class="section-title">Invisible Banner</h2>
+
+        <p class="muted-text">
+            Attempts to apply the invisible profile banner. This only appears invisible if your account
+            has no previous ranked season banner. If you had a previous rank, League may show that rank
+            banner instead.
+        </p>
+
+        <form asp-action="SetLastRankBanner" method="post">
+            <button type="submit"
+                    class="btn btn-primary"
+                    disabled="@(!Model.IsLeagueClientRunning)">
+                Set Invisible Banner
+            </button>
+        </form>
+    </div>
+</div>

@@ -480,5 +480,145 @@ namespace LoLClientTool.Services
                 };
             }
         }
+   
+    public async Task<LeagueClientResult> SetLastRankBannerAsync()
+        {
+            LeagueClientConnection? connection = _leagueClientDetector.GetConnection();
+
+            if (connection == null)
+            {
+                return new LeagueClientResult
+                {
+                    Success = false,
+                    Message = "League Client is not running, or the lockfile could not be read."
+                };
+            }
+
+            try
+            {
+                using var handler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback =
+                        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                };
+
+                using var httpClient = new HttpClient(handler);
+
+                string credentials = $"riot:{connection.Password}";
+                string encodedCredentials = Convert.ToBase64String(
+                    Encoding.ASCII.GetBytes(credentials));
+
+                httpClient.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Basic", encodedCredentials);
+
+                string baseUrl = $"{connection.Protocol}://127.0.0.1:{connection.Port}";
+
+                string summaryUrl =
+                    $"{baseUrl}/lol-challenges/v1/summary-player-data/local-player";
+
+                HttpResponseMessage summaryResponse = await httpClient.GetAsync(summaryUrl);
+
+                if (!summaryResponse.IsSuccessStatusCode)
+                {
+                    string responseBody = await summaryResponse.Content.ReadAsStringAsync();
+
+                    return new LeagueClientResult
+                    {
+                        Success = false,
+                        Message = $"Could not read current profile preferences. Status: {(int)summaryResponse.StatusCode}. Response: {responseBody}"
+                    };
+                }
+
+                string summaryJson = await summaryResponse.Content.ReadAsStringAsync();
+
+                using JsonDocument document = JsonDocument.Parse(summaryJson);
+
+                JsonElement root = document.RootElement;
+
+                List<int> challengeIds = new();
+
+                if (root.TryGetProperty("topChallenges", out JsonElement topChallenges)
+                    && topChallenges.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (JsonElement challenge in topChallenges.EnumerateArray())
+                    {
+                        if (challenge.TryGetProperty("id", out JsonElement idElement))
+                        {
+                            if (idElement.ValueKind == JsonValueKind.Number)
+                            {
+                                challengeIds.Add(idElement.GetInt32());
+                            }
+                            else if (idElement.ValueKind == JsonValueKind.String
+                                     && int.TryParse(idElement.GetString(), out int parsedId))
+                            {
+                                challengeIds.Add(parsedId);
+                            }
+                        }
+                    }
+                }
+
+                string? titleId = null;
+
+                if (root.TryGetProperty("title", out JsonElement titleElement)
+                    && titleElement.ValueKind == JsonValueKind.Object
+                    && titleElement.TryGetProperty("itemId", out JsonElement titleIdElement))
+                {
+                    titleId = titleIdElement.ToString();
+                }
+
+                var payload = new Dictionary<string, object?>
+                {
+                    ["bannerAccent"] = "2"
+                };
+
+                if (challengeIds.Any())
+                {
+                    payload["challengeIds"] = challengeIds;
+                }
+
+                if (!string.IsNullOrWhiteSpace(titleId) && titleId != "-1")
+                {
+                    payload["title"] = titleId;
+                }
+
+                string updateJson = JsonSerializer.Serialize(payload);
+
+                using var content = new StringContent(
+                    updateJson,
+                    Encoding.UTF8,
+                    "application/json");
+
+                string updateUrl =
+                    $"{baseUrl}/lol-challenges/v1/update-player-preferences/";
+
+                HttpResponseMessage updateResponse =
+                    await httpClient.PostAsync(updateUrl, content);
+
+                if (updateResponse.IsSuccessStatusCode)
+                {
+                    return new LeagueClientResult
+                    {
+                        Success = true,
+                        Message = "Profile banner changed to the last-rank banner. You may need to refresh your profile to see it."
+                    };
+                }
+
+                string updateResponseBody = await updateResponse.Content.ReadAsStringAsync();
+
+                return new LeagueClientResult
+                {
+                    Success = false,
+                    Message = $"League Client rejected the banner update. Status: {(int)updateResponse.StatusCode}. Response: {updateResponseBody}"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new LeagueClientResult
+                {
+                    Success = false,
+                    Message = $"Failed to update profile banner: {ex.Message}"
+                };
+            }
+        }
     }
 }

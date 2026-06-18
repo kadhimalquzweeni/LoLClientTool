@@ -7,5 +7,6 @@
         Task<LeagueClientResult> UpdateStatusMessageAsync(string statusMessage);
         Task<LeagueClientResult> ClearChallengeTokensAsync();
         Task<LeagueClientResult> CopyFirstChallengeTokenToAllSlotsAsync();
+        Task<LeagueClientResult> SetLastRankBannerAsync();
     }
 }
