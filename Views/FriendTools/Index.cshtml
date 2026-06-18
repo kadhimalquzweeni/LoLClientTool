@@ -1,0 +1,53 @@
+﻿@model LoLClientTool.Models.FriendToolsViewModel
+
+@{
+    ViewData["Title"] = "Friend Tools";
+}
+
+<div class="page-shell">
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="fw-bold">Friend Tools</h1>
+
+            <p>
+                Manage League friend requests from one local web interface.
+            </p>
+        </div>
+    </section>
+
+    <div class="status-panel status-panel-row">
+        <div>
+            <strong>Status:</strong> @Model.ResultMessage
+        </div>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            Refresh Status
+        </a>
+    </div>
+
+    <div class="form-panel">
+        <h2 class="section-title">Friend Requests</h2>
+
+        <p class="muted-text">
+            Accept or delete all pending friend requests in the League Client.
+        </p>
+
+        <form asp-action="AcceptAllRequests" method="post" class="d-inline">
+            <button type="submit"
+                    class="btn btn-primary"
+                    disabled="@(!Model.IsLeagueClientRunning)"
+                    onclick="return confirm('Accept all pending friend requests?');">
+                Accept All Friend Requests
+            </button>
+        </form>
+
+        <form asp-action="DeleteAllRequests" method="post" class="d-inline">
+            <button type="submit"
+                    class="btn btn-danger"
+                    disabled="@(!Model.IsLeagueClientRunning)"
+                    onclick="return confirm('Delete all pending friend requests?');">
+                Delete All Friend Requests
+            </button>
+        </form>
+    </div>
+</div>

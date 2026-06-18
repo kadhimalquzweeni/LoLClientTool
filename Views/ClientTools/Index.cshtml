@@ -1,0 +1,49 @@
+﻿@model LoLClientTool.Models.ClientToolsViewModel
+
+@{
+    ViewData["Title"] = "Client Tools";
+}
+
+<div class="page-shell">
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="fw-bold">Client Tools</h1>
+
+            <p>
+                Utility tools for fixing or refreshing the League Client interface.
+            </p>
+        </div>
+    </section>
+
+    <div class="status-panel status-panel-row">
+        <div>
+            <strong>Status:</strong> @Model.ResultMessage
+        </div>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            Refresh Status
+        </a>
+    </div>
+
+    <div class="form-panel">
+        <h2 class="section-title">Restart League UX</h2>
+
+        <p class="muted-text">
+            Restarts the League Client interface by closing LeagueClientUx and LeagueClientUxRender.
+            This can help if the League Client UI is frozen, blank, or not responding.
+        </p>
+
+        <p class="muted-text">
+            This does not intentionally close the main League Client process or Riot Client.
+        </p>
+
+        <form asp-action="RestartLeagueUx" method="post">
+            <button type="submit"
+                    class="btn btn-primary"
+                    disabled="@(!Model.IsLeagueClientRunning)"
+                    onclick="return confirm('This will restart the League Client interface. Continue?');">
+                Restart League UX
+            </button>
+        </form>
+    </div>
+</div>

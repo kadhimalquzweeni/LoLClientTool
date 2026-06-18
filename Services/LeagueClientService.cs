@@ -480,8 +480,8 @@ namespace LoLClientTool.Services
                 };
             }
         }
-   
-    public async Task<LeagueClientResult> SetLastRankBannerAsync()
+
+        public async Task<LeagueClientResult> SetLastRankBannerAsync()
         {
             LeagueClientConnection? connection = _leagueClientDetector.GetConnection();
 
@@ -620,5 +620,166 @@ namespace LoLClientTool.Services
                 };
             }
         }
+  
+    public async Task<LeagueClientResult> SetVisibleRankAsync(
+    string queue,
+    string tier,
+    string division)
+        {
+            LeagueClientConnection? connection = _leagueClientDetector.GetConnection();
+
+            if (connection == null)
+            {
+                return new LeagueClientResult
+                {
+                    Success = false,
+                    Message = "League Client is not running, or the lockfile could not be read."
+                };
+            }
+
+            try
+            {
+                using var handler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback =
+                        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                };
+
+                using var httpClient = new HttpClient(handler);
+
+                string credentials = $"riot:{connection.Password}";
+                string encodedCredentials = Convert.ToBase64String(
+                    Encoding.ASCII.GetBytes(credentials));
+
+                httpClient.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Basic", encodedCredentials);
+
+                string url =
+                    $"{connection.Protocol}://127.0.0.1:{connection.Port}/lol-chat/v1/me";
+
+                var payload = new
+                {
+                    lol = new
+                    {
+                        rankedLeagueQueue = queue,
+                        rankedLeagueTier = tier,
+                        rankedLeagueDivision = division
+                    }
+                };
+
+                string json = JsonSerializer.Serialize(payload);
+
+                using var content = new StringContent(
+                    json,
+                    Encoding.UTF8,
+                    "application/json");
+
+                HttpResponseMessage response = await httpClient.PutAsync(url, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return new LeagueClientResult
+                    {
+                        Success = true,
+                        Message = $"Visible rank changed to {tier} {division} for {queue}."
+                    };
+                }
+
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                return new LeagueClientResult
+                {
+                    Success = false,
+                    Message = $"League Client rejected the request. Status: {(int)response.StatusCode}. Response: {responseBody}"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new LeagueClientResult
+                {
+                    Success = false,
+                    Message = $"Failed to update visible rank: {ex.Message}"
+                };
+            }
+        }
+        public async Task<LeagueClientResult> ClearVisibleRankAsync()
+        {
+            LeagueClientConnection? connection = _leagueClientDetector.GetConnection();
+
+            if (connection == null)
+            {
+                return new LeagueClientResult
+                {
+                    Success = false,
+                    Message = "League Client is not running, or the lockfile could not be read."
+                };
+            }
+
+            try
+            {
+                using var handler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback =
+                        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                };
+
+                using var httpClient = new HttpClient(handler);
+
+                string credentials = $"riot:{connection.Password}";
+                string encodedCredentials = Convert.ToBase64String(
+                    Encoding.ASCII.GetBytes(credentials));
+
+                httpClient.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Basic", encodedCredentials);
+
+                string url =
+                    $"{connection.Protocol}://127.0.0.1:{connection.Port}/lol-chat/v1/me";
+
+                var payload = new
+                {
+                    lol = new
+                    {
+                        rankedLeagueQueue = "",
+                        rankedLeagueTier = "",
+                        rankedLeagueDivision = ""
+                    }
+                };
+
+                string json = JsonSerializer.Serialize(payload);
+
+                using var content = new StringContent(
+                    json,
+                    Encoding.UTF8,
+                    "application/json");
+
+                HttpResponseMessage response = await httpClient.PutAsync(url, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return new LeagueClientResult
+                    {
+                        Success = true,
+                        Message = "Visible rank cleared."
+                    };
+                }
+
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                return new LeagueClientResult
+                {
+                    Success = false,
+                    Message = $"League Client rejected the request. Status: {(int)response.StatusCode}. Response: {responseBody}"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new LeagueClientResult
+                {
+                    Success = false,
+                    Message = $"Failed to clear visible rank: {ex.Message}"
+                };
+            }
+        }
     }
+
 }

@@ -8,5 +8,10 @@
         Task<LeagueClientResult> ClearChallengeTokensAsync();
         Task<LeagueClientResult> CopyFirstChallengeTokenToAllSlotsAsync();
         Task<LeagueClientResult> SetLastRankBannerAsync();
+        Task<LeagueClientResult> SetVisibleRankAsync(
+    string queue,
+    string tier,
+    string division);
+        Task<LeagueClientResult> ClearVisibleRankAsync();
     }
 }

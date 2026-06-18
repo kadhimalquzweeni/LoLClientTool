@@ -1,0 +1,127 @@
+﻿@model LoLClientTool.Models.VisibleRankViewModel
+
+@{
+    ViewData["Title"] = "Visible Rank";
+
+    var queues = new[]
+    {
+        new { Value = "RANKED_SOLO_5x5", Text = "Solo/Duo" },
+        new { Value = "RANKED_FLEX_SR", Text = "Flex 5v5" },
+        new { Value = "RANKED_TFT", Text = "TFT Ranked" },
+        new { Value = "RANKED_TFT_TURBO", Text = "TFT Hyper Roll" },
+        new { Value = "RANKED_TFT_DOUBLE_UP", Text = "TFT Double Up" },
+        new { Value = "CHERRY", Text = "Arena" }
+    };
+
+    string[] tiers =
+    {
+        "IRON",
+        "BRONZE",
+        "SILVER",
+        "GOLD",
+        "PLATINUM",
+        "EMERALD",
+        "DIAMOND",
+        "MASTER",
+        "GRANDMASTER",
+        "CHALLENGER"
+    };
+
+    string[] divisions =
+    {
+        "I",
+        "II",
+        "III",
+        "IV",
+        ""
+    };
+}
+
+<div class="page-shell">
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="fw-bold">Visible Rank</h1>
+
+            <p>
+                Change the rank displayed in League chat and your friends list.
+            </p>
+        </div>
+    </section>
+
+    <div class="status-panel status-panel-row">
+        <div>
+            <strong>Status:</strong> @Model.ResultMessage
+        </div>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            Refresh Status
+        </a>
+    </div>
+
+    <div class="form-panel">
+        <h2 class="section-title">Set Visible Rank</h2>
+
+        <p class="muted-text">
+            This changes the rank shown in the friends list only. It does not change your real rank or ranked profile.
+        </p>
+
+        <form asp-action="SetRank" method="post">
+            <div class="mb-3">
+                <label asp-for="Queue" class="form-label">Queue</label>
+
+                <select asp-for="Queue"
+                        class="form-control"
+                        disabled="@(!Model.IsLeagueClientRunning)">
+                    @foreach (var queue in queues)
+                    {
+                        <option value="@queue.Value">@queue.Text</option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Tier" class="form-label">Rank</label>
+
+                <select asp-for="Tier"
+                        class="form-control"
+                        disabled="@(!Model.IsLeagueClientRunning)">
+                    @foreach (string tier in tiers)
+                    {
+                        <option value="@tier">@tier</option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Division" class="form-label">Division</label>
+
+                <select asp-for="Division"
+                        class="form-control"
+                        disabled="@(!Model.IsLeagueClientRunning)">
+                    @foreach (string division in divisions)
+                    {
+                        <option value="@division">
+                            @(string.IsNullOrWhiteSpace(division) ? "None" : division)
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <button type="submit"
+                    class="btn btn-primary"
+                    disabled="@(!Model.IsLeagueClientRunning)">
+                Set Visible Rank
+            </button>
+        </form>
+
+        <hr />
+
+        <form asp-action="ClearRank" method="post">
+            <button type="submit"
+                    class="btn btn-secondary"
+                    disabled="@(!Model.IsLeagueClientRunning)">
+                Clear Visible Rank
+            </button>
+        </form>
+    </div>
+</div>

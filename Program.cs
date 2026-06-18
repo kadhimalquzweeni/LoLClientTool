@@ -14,6 +14,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<ILeagueClientDetector, LeagueClientDetector>();
 builder.Services.AddScoped<ILeagueClientService, LeagueClientService>();
 builder.Services.AddHttpClient<IProfileBackgroundAssetService, ProfileBackgroundAssetService>();
+builder.Services.AddScoped<IClientToolsService, ClientToolsService>();
+builder.Services.AddScoped<IFriendToolsService, FriendToolsService>();
 
 var app = builder.Build();
 
